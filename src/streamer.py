@@ -13,5 +13,5 @@ while True:
         img, frame = video.read()
         socket.send_pyobj(frame)
         cv2.imshow("STREAMING", frame)
-        if cv2.waitKey(1) & 0xFF==ord("q"):
+        if cv2.waitKey(1) & 0xFF == ord("q"):
             break
