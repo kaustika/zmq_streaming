@@ -71,4 +71,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     contest, socket = set_up_server_socket(ip=args.ip, port=args.port)
-    stream(contest, socket)
+    stream(contest, socket, args.source)
