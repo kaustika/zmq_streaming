@@ -11,10 +11,10 @@ def set_up_connection(ip: str, port: str) -> zmq.Socket:
     return socket
 
 
-def window_is_closed(win_name: str) -> bool:
-    q_was_pressed = cv2.waitKey(1) == ord("q")
-    x_was_pressed = cv2.getWindowProperty(win_name, cv2.WND_PROP_VISIBLE) <= 0
-    return q_was_pressed or x_was_pressed
+def is_closed_window(win_name: str) -> bool:
+    is_pressed_q = cv2.waitKey(1) == ord("q")
+    is_pressed_x = cv2.getWindowProperty(win_name, cv2.WND_PROP_VISIBLE) <= 0
+    return is_pressed_q or is_pressed_x
 
 
 def is_valid_source(source: Any) -> bool:
@@ -32,7 +32,7 @@ def stream(source: Union[int, str] = 0) -> None:
             _, frame = video.read()
             socket.send_pyobj(frame)
             cv2.imshow("STREAMING", frame)
-            if window_is_closed("STREAMING"):
+            if is_closed_window("STREAMING"):
                 break
         # stream was ended manually, send None as a signal for that
         socket.send_pyobj(None)
