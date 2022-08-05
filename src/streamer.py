@@ -32,7 +32,10 @@ def stream(context: zmq.Context,
     if is_valid_source(source):
         video = cv2.VideoCapture(source)
         while True:
-            _, frame = video.read()
+            success, frame = video.read()
+            if frame is None:
+                print("Everything comes to its end...")
+                break
             socket.send_pyobj(frame)
             cv2.imshow("STREAMING", frame)
             if is_closed_window("STREAMING"):
