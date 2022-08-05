@@ -32,7 +32,7 @@ def stream(context: zmq.Context,
     if is_valid_source(source):
         video = cv2.VideoCapture(source)
         while True:
-            success, frame = video.read()
+            _, frame = video.read()
             if frame is None:
                 print("Everything comes to its end...")
                 break
