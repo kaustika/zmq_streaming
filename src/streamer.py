@@ -4,7 +4,8 @@ import cv2
 import zmq
 
 
-def set_up_server_socket(ip: str, port: str) -> Tuple[zmq.Context, zmq.Socket]:
+def set_up_server_socket(ip: str,
+                         port: str) -> Tuple[zmq.Context, zmq.Socket]:
     """
     Sets up server publisher socket at given ip:port.
     :param ip: ip-address to bind socket to;
@@ -17,7 +18,8 @@ def set_up_server_socket(ip: str, port: str) -> Tuple[zmq.Context, zmq.Socket]:
     return context, socket
 
 
-def stream(context: zmq.Context, socket: zmq.Socket,
+def stream(context: zmq.Context,
+           socket: zmq.Socket,
            source: Union[int, str] = 0) -> None:
     """
     Stream video (either from webcam or from file) at given socket.

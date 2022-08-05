@@ -4,7 +4,8 @@ import cv2
 import zmq
 
 
-def set_up_client_socket(ip: str, port: str) -> Tuple[zmq.Context, zmq.Socket]:
+def set_up_client_socket(ip: str,
+                         port: str) -> Tuple[zmq.Context, zmq.Socket]:
     """
     Sets up client subscriber socket at given ip:port to receive all types
     of messages.
@@ -20,7 +21,8 @@ def set_up_client_socket(ip: str, port: str) -> Tuple[zmq.Context, zmq.Socket]:
     return context, socket
 
 
-def watch(context: zmq.Context, socket: zmq.Socket) -> None:
+def watch(context: zmq.Context,
+          socket: zmq.Socket) -> None:
     """
     Watch the video stream being transmitted to socket.
     :param context: connection context;
