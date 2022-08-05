@@ -1,26 +1,32 @@
+from util import is_closed_window, is_valid_source
+from typing import Union, Tuple
 import cv2
 import zmq
-import os.path
-from typing import Union, Any, Tuple
-from util import is_closed_window
 
 
 def set_up_server_socket(ip: str, port: str) -> Tuple[zmq.Context, zmq.Socket]:
+    """
+    Sets up server publisher socket at given ip:port.
+    :param ip: ip-address to bind socket to;
+    :param port: port to bind socket to;
+    :return: Context and Socket objects to take control over the connection.
+    """
     context = zmq.Context()
     socket = context.socket(zmq.PUB)
     socket.bind(f"tcp://{ip}:{port}")
     return context, socket
 
 
-def is_valid_source(source: Any) -> bool:
-    if source != 0 and not os.path.isfile(source):
-        return False
-    video = cv2.VideoCapture(source)
-    success, _ = video.read()
-    return bool(success)
-
-
-def stream(context, socket, source: Union[int, str] = 0) -> None:
+def stream(context: zmq.Context, socket: zmq.Socket,
+           source: Union[int, str] = 0) -> None:
+    """
+    Stream video (either from webcam or from file) at given socket.
+    :param context: connection context;
+    :param socket: transmitting socket;
+    :param source: where to take the video from (0 for webcam or
+                   <valid_video_path> for file-content streaming);
+    :return:
+    """
     if is_valid_source(source):
         video = cv2.VideoCapture(source)
         while True:
@@ -43,5 +49,3 @@ def stream(context, socket, source: Union[int, str] = 0) -> None:
 if __name__ == "__main__":
     contest, socket = set_up_server_socket(ip="*", port="5577")
     stream(contest, socket)
-
-
