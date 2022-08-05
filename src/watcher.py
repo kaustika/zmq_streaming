@@ -1,5 +1,6 @@
 from util import is_closed_window
 from typing import Tuple
+import argparse
 import cv2
 import zmq
 
@@ -44,5 +45,17 @@ def watch(context: zmq.Context,
 
 
 if __name__ == "__main__":
-    context, socket = set_up_client_socket(ip="localhost", port="5577")
+    parser = argparse.ArgumentParser(description='Video Stream Watcher',
+                                     add_help=False)
+    parser.add_argument("-i", "--ip", action="store", dest="ip",
+                        help="Ip-address to connect socket to.",
+                        default="localhost")
+    parser.add_argument("-p", "--port", action="store", dest="port",
+                        help="Port to connect socket to.",
+                        default=5577)
+    parser.add_argument("-h", "--help", action="help",
+                        help="show this help message")
+    args = parser.parse_args()
+
+    context, socket = set_up_client_socket(ip=args.ip, port=args.port)
     watch(context, socket)

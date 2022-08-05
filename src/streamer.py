@@ -1,5 +1,6 @@
 from util import is_closed_window, is_valid_source
 from typing import Union, Tuple
+import argparse
 import cv2
 import zmq
 
@@ -52,5 +53,22 @@ def stream(context: zmq.Context,
 
 
 if __name__ == "__main__":
-    contest, socket = set_up_server_socket(ip="*", port="5577")
+    parser = argparse.ArgumentParser(description='Video Streamer',
+                                     add_help=False)
+    parser.add_argument("-i", "--ip", action="store", dest="ip",
+                        help="Ip-address to bind socket to.",
+                        default="*")
+    parser.add_argument("-p", "--port", action="store", dest="port",
+                        help="Port to bind socket to.",
+                        default=5577)
+    parser.add_argument("-s", "--source", action="store", dest="source",
+                        help="Where to take the video from:"
+                        " - default is 0 for webcam;"
+                        " - <valid_video_path> for file-content streaming.",
+                        default=0)
+    parser.add_argument("-h", "--help", action="help",
+                        help="show this help message")
+    args = parser.parse_args()
+
+    contest, socket = set_up_server_socket(ip=args.ip, port=args.port)
     stream(contest, socket)
