@@ -1,15 +1,15 @@
 import cv2
 import zmq
 import os.path
-from typing import Union, Any
+from typing import Union, Any, Tuple
 from util import is_closed_window
 
 
-def set_up_server_socket(ip: str, port: str) -> zmq.Socket:
+def set_up_server_socket(ip: str, port: str) -> Tuple[zmq.Context, zmq.Socket]:
     context = zmq.Context()
     socket = context.socket(zmq.PUB)
     socket.bind(f"tcp://{ip}:{port}")
-    return socket
+    return context, socket
 
 
 def is_valid_source(source: Any) -> bool:
@@ -20,7 +20,7 @@ def is_valid_source(source: Any) -> bool:
     return bool(success)
 
 
-def stream(source: Union[int, str] = 0) -> None:
+def stream(context, socket, source: Union[int, str] = 0) -> None:
     if is_valid_source(source):
         video = cv2.VideoCapture(source)
         while True:
@@ -31,14 +31,17 @@ def stream(source: Union[int, str] = 0) -> None:
                 break
         # stream was ended manually, send None as a signal for that
         socket.send_pyobj(None)
+        socket.close()
+        context.term()
+
         video.release()
         cv2.destroyAllWindows()
     else:
         print("Check accessibility of your video source!")
 
 
-if __name__=="__main__":
-    socket = set_up_server_socket(ip="*", port="5577")
-    stream()
+if __name__ == "__main__":
+    contest, socket = set_up_server_socket(ip="*", port="5577")
+    stream(contest, socket)
 
 
