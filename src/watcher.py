@@ -13,6 +13,11 @@ socket.setsockopt_string(zmq.SUBSCRIBE, '')
 
 while True:
     frame = socket.recv_pyobj()
-    cv2.imshow("WATCHING", frame)
-    if cv2.waitKey(1) & 0xFF == ord("q"):
+    if frame is None:
         break
+    cv2.imshow("WATCHING", frame)
+    if cv2.waitKey(1) == ord("q") or\
+            cv2.getWindowProperty("WATCHING", cv2.WND_PROP_VISIBLE) <= 0:
+        break
+
+cv2.destroyAllWindows()
