@@ -15,8 +15,22 @@ Required libraries are listed in requirements.txt.
 
 Server and client are command line runnable, you can pass the arguments by their keys (see streamer.py --help or watcher.py -- help).
 
-All arguments have their default values for application to launch locally and stream video from webcam, but one can set arguments using keys (--ip --port --source for streamer.py and --ip --port --timeout for watcher.py):
-- run server: python.exe streamer.py --optional_key optional_arg_value
-- run client: python.exe watcher.py --optional_key optional_arg_value
+All arguments have their default values for application to launch locally and stream video from webcam, but one can set arguments using keys (--ip --port --source for streamer.py and --ip --port --timeout for watcher.py).
+
+Installation:
+```bash
+git clone https://github.com/kaustika/zmq_streaming.git
+cd zmq_streaming
+python -m venv env
+source env/bin/activate # Windows: env/Scripts/activate.bat
+pip install -r requirements.txt
+```
+
+Basic usage:
+```bash
+cd src
+python streaming.py
+python watching.py
+```
 
 Enjoy your stream!
