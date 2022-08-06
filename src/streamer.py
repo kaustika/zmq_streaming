@@ -54,7 +54,7 @@ def stream(context: zmq.Context,
         print("Check accessibility of your video source!")
 
 
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser(description='Video Streamer',
                                      add_help=False)
     parser.add_argument("-i", "--ip", action="store", dest="ip",
@@ -65,8 +65,8 @@ if __name__ == "__main__":
                         default=5577)
     parser.add_argument("-s", "--source", action="store", dest="source",
                         help="Where to take the video from:"
-                        " - default is 0 for webcam;"
-                        " - <valid_video_path> for file-content streaming.",
+                             " - default is 0 for webcam;"
+                             " - <valid_video_path> for file-content streaming.",
                         default=0)
     parser.add_argument("-h", "--help", action="help",
                         help="show this help message")
@@ -74,3 +74,7 @@ if __name__ == "__main__":
 
     contest, socket = set_up_server_socket(ip=args.ip, port=args.port)
     stream(contest, socket, args.source)
+
+
+if __name__ == "__main__":
+    main()

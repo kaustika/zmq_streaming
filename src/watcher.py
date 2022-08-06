@@ -67,7 +67,7 @@ def watch(context: zmq.Context,
     cv2.destroyAllWindows()
 
 
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser(description='Video Stream Watcher',
                                      add_help=False)
     parser.add_argument("-i", "--ip", action="store", dest="ip",
@@ -85,3 +85,7 @@ if __name__ == "__main__":
 
     context, socket = set_up_client_socket(ip=args.ip, port=args.port, timeout=args.timeout)
     watch(context, socket)
+
+
+if __name__ == "__main__":
+    main()
