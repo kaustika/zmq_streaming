@@ -19,7 +19,14 @@ def set_up_client_socket(ip: str,
     socket.connect(f"tcp://{ip}:{port}")
     # '' - no message filter for subscription
     socket.setsockopt_string(zmq.SUBSCRIBE, '')
+    print(f"Subscribing to socket at tcp://{ip}:{port}...")
     return context, socket
+
+
+def check_connection(socket: zmq.Socket) -> None:
+    print("Checking connection...")
+    _ = socket.recv_pyobj()
+    print("Connected!")
 
 
 def watch(context: zmq.Context,
@@ -30,6 +37,7 @@ def watch(context: zmq.Context,
     :param socket: monitored socket;
     :return:
     """
+    check_connection(socket)
     while True:
         frame = socket.recv_pyobj()
         if frame is None:

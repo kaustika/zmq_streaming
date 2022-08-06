@@ -1,6 +1,6 @@
 # Video Streaming Client-Server application
 
-Implemented using Python + ZeroMQ's Publisher-Subscriber socket pattern.
+Implemented using Python + OpenCV + ZeroMQ's Publisher-Subscriber socket pattern.
  
 - Any number of clients can connect to the stream, it's supported by ZMQ's pubsub pattern.
 - Server and its client(s) can be launched in any order. Client(s) will wait till the server is online and streaming, if the server was down at the time client was launched. Server can run with no clients at all.

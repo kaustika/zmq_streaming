@@ -16,6 +16,7 @@ def set_up_server_socket(ip: str,
     context = zmq.Context()
     socket = context.socket(zmq.PUB)
     socket.bind(f"tcp://{ip}:{port}")
+    print(f"Accepting connections from {ip} at port {port} - tcp://{ip}:{port}")
     return context, socket
 
 
