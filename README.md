@@ -11,10 +11,12 @@ Implemented using Python + OpenCV + ZeroMQ's Publisher-Subscriber socket pattern
   - a video-file; in that case the stream will finish naturally at the end of the video.
 - Server-side streaming can be terminated by closing the window with stream (by pressing letter q (NB: keyboard layout) or clicking cross(X) on the window). This will automatically disconnect all clients, because there's nothing to watch.
 
-Server and client are command line runnable, you can pass the arguments by their keys (see streamer.py --help or watcher.py -- help). By default everything works locally, but IPs can be set manually.
-
 Required libraries are listed in requirements.txt.
-- run server: python.exe streamer.py (--ip --port --source)
-- run client: python.exe watcher.py (--ip --port --timeout)
+
+Server and client are command line runnable, you can pass the arguments by their keys (see streamer.py --help or watcher.py -- help).
+
+All arguments have their default values for application to launch locally and stream video from webcam, but one can set arguments using keys (--ip --port --source for streamer.py and --ip --port --timeout for watcher.py):
+- run server: python.exe streamer.py --optional_key optional_arg_value
+- run client: python.exe watcher.py --optional_key optional_arg_value
 
 Enjoy your stream!
