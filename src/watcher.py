@@ -7,15 +7,16 @@ import zmq
 
 
 def set_up_client_socket(ip: str,
-                         port: str) -> Tuple[zmq.Context, zmq.Socket]:
+                         port: str,
+                         timeout: int) -> Tuple[zmq.Context, zmq.Socket]:
     """
     Sets up client subscriber socket at given ip:port to receive all types
     of messages.
     :param ip: ip-address to connect socket to;
     :param port: port to connect socket to;
+    :param timeout: server response timeout in ms;
     :return: Context and Socket objects to take control over the connection.
     """
-    timeout = 10000
     context = zmq.Context()
     socket = context.socket(zmq.SUB)
     socket.connect(f"tcp://{ip}:{port}")
@@ -75,9 +76,12 @@ if __name__ == "__main__":
     parser.add_argument("-p", "--port", action="store", dest="port",
                         help="Port to connect socket to.",
                         default=5577)
+    parser.add_argument("-t", "--timeout", action="store", dest="timeout",
+                        help="Server response timeout is ms.",
+                        default=10000)
     parser.add_argument("-h", "--help", action="help",
                         help="show this help message")
     args = parser.parse_args()
 
-    context, socket = set_up_client_socket(ip=args.ip, port=args.port)
+    context, socket = set_up_client_socket(ip=args.ip, port=args.port, timeout=args.timeout)
     watch(context, socket)
