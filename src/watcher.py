@@ -24,6 +24,11 @@ def set_up_client_socket(ip: str,
 
 
 def check_connection(socket: zmq.Socket) -> None:
+    """
+    Checks connection by receiving a message from server.
+    :param socket: socket to check connection at;
+    :return:
+    """
     print("Checking connection...")
     _ = socket.recv_pyobj()
     print("Connected!")
