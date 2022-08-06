@@ -29,8 +29,8 @@ pip install -r requirements.txt
 Basic usage:
 ```bash
 cd src
-python streaming.py
-python watching.py
+python streamer.py
+python watcher.py
 ```
 
 Enjoy your stream!
