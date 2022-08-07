@@ -1,21 +1,22 @@
+from contextlib import contextmanager
 from util import is_closed_window
-from typing import Tuple
-import numpy as np
 import argparse
 import cv2
 import zmq
 
+WATCHER_WIN_NAME = "WATCHING"
 
-def set_up_client_socket(ip: str,
-                         port: str,
-                         timeout: int) -> Tuple[zmq.Context, zmq.Socket]:
+
+@contextmanager
+def client_socket_manager(ip: str,
+                          port: str,
+                          timeout: int) -> zmq.Socket:
     """
-    Sets up client subscriber socket at given ip:port to receive all types
-    of messages.
+    Resource manager for client socket and context.
     :param ip: ip-address to connect socket to;
     :param port: port to connect socket to;
     :param timeout: server response timeout in ms;
-    :return: Context and Socket objects to take control over the connection.
+    :return: Socket object to take control over the connection.
     """
     context = zmq.Context()
     socket = context.socket(zmq.SUB)
@@ -24,46 +25,28 @@ def set_up_client_socket(ip: str,
     socket.setsockopt_string(zmq.SUBSCRIBE, '')
     socket.setsockopt(zmq.RCVTIMEO, timeout)
     print(f"Subscribing to socket at tcp://{ip}:{port}...")
-    return context, socket
-
-
-def receive_object(socket: zmq.Socket) -> np.ndarray:
-    """
-    Try-catch wrapper for receiving msgs from server.
-    Exception is thrown when timeout is exceeded -> server either
-    didn't connect at all in the beginning ar lost its network
-    connection.
-    :param socket: subscriber socket;
-    :return:
-    """
     try:
-        frame = socket.recv_pyobj()
-        return frame
-    except zmq.ZMQError as e:
-        print("Timeout for waiting exceeded, server not online, exiting...")
-        print(e)
-        exit()
+        yield socket
+    finally:
+        socket.close()
+        context.term()
 
 
-def watch(context: zmq.Context,
-          socket: zmq.Socket) -> None:
+def watch(socket: zmq.Socket) -> None:
     """
     Watch the video stream being transmitted to socket.
-    :param context: connection context;
     :param socket: monitored socket;
     :return:
     """
     while True:
-        frame = receive_object(socket)
+        frame = socket.recv_pyobj()
         if frame is None:
             print("Server stopped streaming, exiting...")
             break
-        cv2.imshow("WATCHING", frame)
-        if is_closed_window("WATCHING"):
+        cv2.imshow(WATCHER_WIN_NAME, frame)
+        if is_closed_window(WATCHER_WIN_NAME):
+            print("Stream window was closed, goodbye!")
             break
-    socket.close()
-    context.term()
-
     cv2.destroyAllWindows()
 
 
@@ -78,14 +61,18 @@ def main():
                         default=5577)
     parser.add_argument("-t", "--timeout", action="store", dest="timeout",
                         help="Server response timeout is ms.",
-                        default=10000)
+                        default=5000)
     parser.add_argument("-h", "--help", action="help",
                         help="show this help message")
     args = parser.parse_args()
 
-    context, socket = set_up_client_socket(ip=args.ip, port=args.port, timeout=args.timeout)
-    watch(context, socket)
+    try:
+        with client_socket_manager(ip=args.ip, port=args.port, timeout=args.timeout) as socket:
+            watch(socket)
+    except zmq.ZMQError as e:
+        print("Timeout for waiting exceeded, server not online, exiting...")
+        print(e)
 
 
-if __name__ == "__main__":
+if __name__=="__main__":
     main()
