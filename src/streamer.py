@@ -13,7 +13,9 @@ class SourceUnavailable(Exception):
     Exception to raise when invalid source is passed
     to cv2.VideoCapture.
     """
-    pass
+    def __init__(self):
+        self.msg = "Check accessibility of your video source! " \
+                       "It's either your webcam or path to video-file."
 
 
 @contextmanager
@@ -96,9 +98,8 @@ def main():
             stream(socket, args.source)
     except zmq.ZMQError as e:
         print(e)
-    except SourceUnavailable:
-        print("Check accessibility of your video source! "
-              "It's either your webcam or path to video-file.")
+    except SourceUnavailable as e:
+        print(e.msg)
 
 
 if __name__=="__main__":
