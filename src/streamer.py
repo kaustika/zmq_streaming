@@ -15,7 +15,7 @@ class SourceUnavailable(Exception):
     """
     def __init__(self):
         self.msg = "Check accessibility of your video source! " \
-                       "It's either your webcam or path to video-file."
+                    "It's either your webcam or path to video-file."
 
 
 @contextmanager
