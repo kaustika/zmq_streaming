@@ -38,7 +38,7 @@ def stream(socket: zmq.Socket,
                    <valid_video_path> for file-content streaming);
     :return:
     """
-    source = 0 if not source else source
+    source = 0 if source is None else source
     video = cv2.VideoCapture(source)
 
     while True:
