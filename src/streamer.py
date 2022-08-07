@@ -8,6 +8,14 @@ import zmq
 STREAMER_WIN_NAME = "STREAMING"
 
 
+class SourceUnavailable(Exception):
+    """
+    Exception to raise when invalid source is passed
+    to cv2.VideoCapture.
+    """
+    pass
+
+
 @contextmanager
 def server_socket_manager(ip: str,
                           port: str) -> zmq.Socket:
@@ -41,12 +49,15 @@ def stream(socket: zmq.Socket,
     source = 0 if source is None else source
     video = cv2.VideoCapture(source)
 
+    if not video.isOpened():
+        raise SourceUnavailable
+
     while True:
         success, frame = video.read()
         if not success:
-            print("Check accessibility of your video source! It's "
-                  "either the end of the video you passed as source "
-                  "or there's something wrong with your webcam.")
+            print("Can't receive frame (stream end?), exiting... "
+                  "Your video came to its end or you didn't give "
+                  "access to your camera.")
             break
         socket.send_pyobj(frame)
         cv2.imshow(STREAMER_WIN_NAME, frame)
@@ -85,7 +96,10 @@ def main():
             stream(socket, args.source)
     except zmq.ZMQError as e:
         print(e)
+    except SourceUnavailable:
+        print("Check accessibility of your video source! "
+              "It's either your webcam or path to video-file.")
 
 
-if __name__ == "__main__":
+if __name__=="__main__":
     main()
